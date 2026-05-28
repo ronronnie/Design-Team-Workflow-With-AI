@@ -1,0 +1,22 @@
+[
+  {
+    "id": "customers-table-empty-state-001",
+    "source": {
+      "figmaUrl": "https://www.figma.com/design/FILE_KEY/Product-Concept?node-id=123-456",
+      "nodeId": "123:456"
+    },
+    "expected": {
+      "mustUseComponents": ["EmptyState", "Button"],
+      "mustMention": ["customers"],
+      "mustProvideFilterRecovery": true,
+      "maxBodyLength": 140
+    },
+    "scores": {
+      "componentCorrectness": null,
+      "tokenCorrectness": null,
+      "copyQuality": null,
+      "layoutPlausibility": null,
+      "missingEdgeCases": null
+    }
+  }
+]
