@@ -14,6 +14,12 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [decision, setDecision] = useState<ReviewDecision | null>(null);
   const [notes, setNotes] = useState("");
+  const [parseResult, setParseResult] = useState<{
+    fileKey: string;
+    nodeId: string;
+    mode: "real" | "mock";
+    hasFigmaToken: boolean;
+  } | null>(null);
 
   const hasResult = Boolean(result);
   const linterStatus = useMemo(() => {
@@ -48,6 +54,37 @@ export default function Home() {
       setError(cause instanceof Error ? cause.message : "Unexpected error.");
     } finally {
       setIsRunning(false);
+    }
+  }
+
+  async function parseFrame() {
+    setError(null);
+
+    try {
+      const response = await fetch("/api/figma/parse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ figmaUrl, nodeId })
+      });
+      const data = (await response.json()) as
+        | {
+            parsed: { fileKey: string; nodeId: string; mode: "real" | "mock" };
+            hasFigmaToken: boolean;
+          }
+        | { error: string };
+
+      if (!response.ok) {
+        throw new Error("error" in data ? data.error : "Parse failed.");
+      }
+
+      if ("parsed" in data) {
+        setParseResult({
+          ...data.parsed,
+          hasFigmaToken: data.hasFigmaToken
+        });
+      }
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unexpected error.");
     }
   }
 
@@ -110,9 +147,32 @@ export default function Home() {
             />
           </label>
 
-          <button className="primary" disabled={isRunning}>
-            {isRunning ? "Running pipeline..." : "Generate empty state"}
-          </button>
+          <div className="input-actions">
+            <button className="primary" disabled={isRunning}>
+              {isRunning ? "Running pipeline..." : "Generate empty state"}
+            </button>
+            <button type="button" onClick={parseFrame}>
+              Parse frame
+            </button>
+          </div>
+
+          {parseResult ? (
+            <div className="parse-result">
+              <p>
+                <strong>File:</strong> {parseResult.fileKey}
+              </p>
+              <p>
+                <strong>Node:</strong> {parseResult.nodeId}
+              </p>
+              <p>
+                <strong>Mode:</strong> {parseResult.mode}
+              </p>
+              <p>
+                <strong>Figma token:</strong>{" "}
+                {parseResult.hasFigmaToken ? "present" : "missing"}
+              </p>
+            </div>
+          ) : null}
 
           {error ? <p className="error">{error}</p> : null}
         </form>

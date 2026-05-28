@@ -64,6 +64,9 @@ function mockEmptyState(
     .join(" ")
     .toLowerCase()
     .includes("customers");
+  const primaryAction =
+    representation.summary.likelyPrimaryAction ||
+    (isCustomerTable ? "Invite customer" : "Create item");
 
   return {
     expansionType: "empty_state",
@@ -71,7 +74,7 @@ function mockEmptyState(
     body: isCustomerTable
       ? "Invite your first customer or adjust the filters to find existing records."
       : "Create the first item or change the current filters to see results here.",
-    primaryAction: isCustomerTable ? "Invite customer" : "Create item",
+    primaryAction,
     secondaryAction: "Clear filters",
     componentPlan: ["PageShell", "DataTable", "EmptyState", "Button", "SecondaryButton"],
     rationale:

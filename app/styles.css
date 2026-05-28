@@ -177,6 +177,32 @@ textarea:focus {
   margin-bottom: 0;
 }
 
+.input-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.parse-result {
+  background: #fbfcfd;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+  display: grid;
+  font-size: 13px;
+  gap: 4px;
+  margin-top: 14px;
+  padding: 12px;
+}
+
+.parse-result p {
+  margin: 0;
+}
+
+.parse-result strong {
+  color: var(--ink);
+}
+
 .empty-preview {
   align-items: center;
   border: 1px dashed #bcc5d1;

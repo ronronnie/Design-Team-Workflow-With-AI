@@ -20,7 +20,7 @@ export async function fetchFigmaFrame(input: FigmaInput): Promise<FigmaFrame> {
   });
 
   if (!nodeResponse.ok) {
-    throw new Error(`Figma node fetch failed: ${nodeResponse.status}`);
+    throw new Error(toFigmaErrorMessage(nodeResponse.status));
   }
 
   const nodePayload = await nodeResponse.json();
@@ -45,7 +45,7 @@ export async function fetchFigmaFrame(input: FigmaInput): Promise<FigmaFrame> {
   };
 }
 
-function parseFigmaInput(input: FigmaInput): {
+export function parseFigmaInput(input: FigmaInput): {
   fileKey: string;
   nodeId: string;
   mode: "real" | "mock";
@@ -97,6 +97,19 @@ async function fetchFigmaImageUrl(
   return imagePayload.images?.[nodeId];
 }
 
+function toFigmaErrorMessage(status: number) {
+  if (status === 401) {
+    return "Figma rejected the access token. Check FIGMA_ACCESS_TOKEN.";
+  }
+  if (status === 403) {
+    return "Figma token is valid but cannot access this file or frame.";
+  }
+  if (status === 404) {
+    return "Figma could not find that file or node ID.";
+  }
+  return `Figma node fetch failed with status ${status}.`;
+}
+
 function mockFrame(fileKey: string, nodeId: string): FigmaFrame {
   return {
     fileKey,
@@ -108,12 +121,21 @@ function mockFrame(fileKey: string, nodeId: string): FigmaFrame {
       id: nodeId,
       name: "Customers table concept",
       type: "FRAME",
+      layoutMode: "VERTICAL",
+      itemSpacing: 20,
+      paddingTop: 28,
+      paddingRight: 32,
+      paddingBottom: 32,
+      paddingLeft: 32,
       absoluteBoundingBox: { x: 0, y: 0, width: 1280, height: 800 },
       children: [
         {
           id: "1:1",
           name: "Header",
           type: "FRAME",
+          layoutMode: "HORIZONTAL",
+          primaryAxisAlignItems: "SPACE_BETWEEN",
+          counterAxisAlignItems: "CENTER",
           absoluteBoundingBox: { x: 32, y: 28, width: 1216, height: 64 },
           children: [
             {
@@ -126,8 +148,9 @@ function mockFrame(fileKey: string, nodeId: string): FigmaFrame {
             },
             {
               id: "1:3",
-              name: "Invite button",
+              name: "Invite customer button",
               type: "INSTANCE",
+              componentId: "component-button-primary",
               absoluteBoundingBox: { x: 1112, y: 32, width: 136, height: 40 }
             }
           ]
@@ -136,12 +159,14 @@ function mockFrame(fileKey: string, nodeId: string): FigmaFrame {
           id: "2:1",
           name: "Filters",
           type: "INSTANCE",
+          componentId: "component-filter-bar",
           absoluteBoundingBox: { x: 32, y: 112, width: 1216, height: 56 }
         },
         {
           id: "3:1",
           name: "Customer data table",
           type: "INSTANCE",
+          componentId: "component-data-table",
           absoluteBoundingBox: { x: 32, y: 188, width: 1216, height: 548 },
           children: [
             {

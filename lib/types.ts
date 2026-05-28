@@ -18,6 +18,18 @@ export type FigmaNode = {
   name: string;
   type: string;
   visible?: boolean;
+  componentId?: string;
+  componentProperties?: Record<string, unknown>;
+  layoutMode?: "HORIZONTAL" | "VERTICAL" | "NONE";
+  primaryAxisAlignItems?: string;
+  counterAxisAlignItems?: string;
+  itemSpacing?: number;
+  paddingTop?: number;
+  paddingRight?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
+  cornerRadius?: number;
+  opacity?: number;
   absoluteBoundingBox?: {
     x: number;
     y: number;
@@ -25,6 +37,8 @@ export type FigmaNode = {
     height: number;
   };
   fills?: Array<{ type?: string; color?: Color; visible?: boolean }>;
+  strokes?: Array<{ type?: string; color?: Color; visible?: boolean }>;
+  strokeWeight?: number;
   style?: {
     fontFamily?: string;
     fontSize?: number;
@@ -71,6 +85,7 @@ export type FrameRepresentation = {
     name: string;
     type: string;
     depth: number;
+    componentId?: string;
     text?: string;
     bounds?: {
       x: number;
@@ -78,7 +93,32 @@ export type FrameRepresentation = {
       width: number;
       height: number;
     };
+    layout?: {
+      mode?: "HORIZONTAL" | "VERTICAL" | "NONE";
+      primaryAxisAlignItems?: string;
+      counterAxisAlignItems?: string;
+      itemSpacing?: number;
+      padding?: {
+        top?: number;
+        right?: number;
+        bottom?: number;
+        left?: number;
+      };
+    };
+    typography?: {
+      fontFamily?: string;
+      fontSize?: number;
+      fontWeight?: number;
+    };
+    colors?: string[];
   }>;
+  summary: {
+    nodeCount: number;
+    textNodeCount: number;
+    instanceCount: number;
+    componentInstances: string[];
+    likelyPrimaryAction?: string;
+  };
   detectedPatterns: string[];
   visibleText: string[];
   tokenUsage: {
