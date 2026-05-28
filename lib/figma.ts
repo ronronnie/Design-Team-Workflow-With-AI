@@ -1,4 +1,4 @@
-import type { FigmaFrame, FigmaInput, FigmaNode } from "@/lib/types";
+import type { FigmaFrame, FigmaInput, FigmaNode } from "./types";
 
 export async function fetchFigmaFrame(input: FigmaInput): Promise<FigmaFrame> {
   const parsed = parseFigmaInput(input);

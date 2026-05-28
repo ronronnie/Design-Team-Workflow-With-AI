@@ -1,4 +1,4 @@
-import type { FigmaFrame, FigmaNode, FrameRepresentation } from "@/lib/types";
+import type { FigmaFrame, FigmaNode, FrameRepresentation } from "./types";
 
 export function toFrameRepresentation(frame: FigmaFrame): FrameRepresentation {
   const rootBounds = frame.node.absoluteBoundingBox ?? {

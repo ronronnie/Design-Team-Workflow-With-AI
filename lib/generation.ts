@@ -1,8 +1,9 @@
-import { designSystemSpec } from "@/lib/design-system/spec";
+import { designSystemSpec } from "./design-system/spec";
+import { parseEmptyStateGeneration } from "./generation-schema";
 import type {
   EmptyStateGeneration,
   FrameRepresentation
-} from "@/lib/types";
+} from "./types";
 
 export async function generateEmptyState(
   representation: FrameRepresentation
@@ -54,7 +55,7 @@ export async function generateEmptyState(
   const text = payload.content?.[0]?.text;
   if (!text) throw new Error("Anthropic returned an empty response.");
 
-  return JSON.parse(text) as EmptyStateGeneration;
+  return parseEmptyStateGeneration(JSON.parse(text));
 }
 
 function mockEmptyState(
@@ -68,7 +69,7 @@ function mockEmptyState(
     representation.summary.likelyPrimaryAction ||
     (isCustomerTable ? "Invite customer" : "Create item");
 
-  return {
+  return parseEmptyStateGeneration({
     expansionType: "empty_state",
     title: isCustomerTable ? "No customers yet" : "Nothing to show yet",
     body: isCustomerTable
@@ -80,5 +81,5 @@ function mockEmptyState(
     rationale:
       "The source frame is a filterable data table with a primary creation action, so the empty state keeps the table context and offers create plus filter recovery paths.",
     confidence: 0.82
-  };
+  });
 }

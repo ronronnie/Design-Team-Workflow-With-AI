@@ -1,9 +1,9 @@
-import { designSystemSpec } from "@/lib/design-system/spec";
+import { designSystemSpec } from "./design-system/spec";
 import type {
   EmptyStateGeneration,
   FrameRepresentation,
   LintResult
-} from "@/lib/types";
+} from "./types";
 
 export function lintGeneration(
   generation: EmptyStateGeneration,

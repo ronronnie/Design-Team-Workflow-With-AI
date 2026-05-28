@@ -1,23 +1,30 @@
-import type { ReviewDecision } from "@/lib/types";
+import { mkdir, readFile, appendFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import type { ReviewRecord } from "./types";
 
-type ReviewRecord = {
-  runId: string;
-  decision: ReviewDecision;
-  notes: string;
-  createdAt: string;
-};
+const reviewLogPath = join(process.cwd(), "data", "local", "reviews.jsonl");
 
-const reviews: ReviewRecord[] = [];
-
-export function saveReview(record: Omit<ReviewRecord, "createdAt">) {
+export async function saveReview(record: Omit<ReviewRecord, "createdAt">) {
   const saved = {
     ...record,
     createdAt: new Date().toISOString()
   };
-  reviews.push(saved);
+  await mkdir(dirname(reviewLogPath), { recursive: true });
+  await appendFile(reviewLogPath, `${JSON.stringify(saved)}\n`, "utf8");
   return saved;
 }
 
-export function listReviews() {
-  return reviews;
+export async function listReviews() {
+  try {
+    const content = await readFile(reviewLogPath, "utf8");
+    return content
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line) as ReviewRecord);
+  } catch (cause) {
+    if (cause instanceof Error && "code" in cause && cause.code === "ENOENT") {
+      return [];
+    }
+    throw cause;
+  }
 }

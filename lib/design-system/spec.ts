@@ -1,4 +1,4 @@
-import type { DesignSystemSpec } from "@/lib/types";
+import type { DesignSystemSpec } from "../types";
 
 export const designSystemSpec: DesignSystemSpec = {
   tokens: {

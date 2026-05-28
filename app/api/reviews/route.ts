@@ -5,7 +5,7 @@ import type { ReviewDecision } from "@/lib/types";
 const decisions = new Set<ReviewDecision>(["accept", "edit", "dismiss"]);
 
 export async function GET() {
-  return NextResponse.json({ reviews: listReviews() });
+  return NextResponse.json({ reviews: await listReviews() });
 }
 
 export async function POST(request: Request) {
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const saved = saveReview({
+  const saved = await saveReview({
     runId: body.runId,
     decision: body.decision,
     notes: body.notes ?? ""

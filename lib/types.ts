@@ -156,3 +156,10 @@ export type DemoResponse = {
 };
 
 export type ReviewDecision = "accept" | "edit" | "dismiss";
+
+export type ReviewRecord = {
+  runId: string;
+  decision: ReviewDecision;
+  notes: string;
+  createdAt: string;
+};
